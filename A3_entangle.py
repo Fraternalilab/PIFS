@@ -45,11 +45,12 @@ for pdb in pdbs.keys():
     chainfile = 'out/' + domain + '_graft' + pdb + '_chainEntangle.txt'
     basefile = 'out/' + domain + '_graft' + pdb + '_baseEntangle.txt'
     print tarfile
+    subprocess.call('mkdir '+ domain + '_graft' + pdb, shell=True )
     subprocess.call('tar -xzvf ' + tarfile + ' -C ' +  domain + '_graft' + pdb , shell=True)
     pdbfiles = glob.glob(domain + '_graft' + pdb + '/' + domain + '*.pdb')
     for pdbfile in pdbfiles:
         print pdbfile + ' ...'
-        name_struct = pdbfile.split('/')[1]
+        name_struct = pdbfile.split('/')[1][:-4]
         chain_entangle(pdbfile, 'loop1_' + name_struct, A3s[domain]['loop1'], pdbs[pdb], 'A', 'B', chainfile)
         chain_entangle(pdbfile, 'loop3_' + name_struct, A3s[domain]['loop3'], pdbs[pdb], 'A', 'B', chainfile)
         base_entangle(pdbfile, 'loop1_' + name_struct, A3s[domain]['loop1'], pdbs[pdb], 'A', 'B', basefile)
