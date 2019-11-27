@@ -41,31 +41,17 @@ print domain
 os.chdir(domain + '/')
 for pdb in pdbs.keys():
     print pdb
-    tarfile = domain + '_graft' + pdb + '.tar.gz'
-    chainfile = domain + '_graft' + pdb + '_chainEntangle.txt'
-    basefile = domain + '_graft' + pdb + '_baseEntangle.txt'
-    tarfile_restrained = domain + '_graft' + pdb + '_restrained.tar.gz'
-    chainfile_restrained = domain + '_graft' + pdb + '_restrained_chainEntangle.txt'
-    basefile_restrained = domain + '_graft' + pdb + '_restrained_baseEntangle.txt'
-    # first the non-restrained ones
+    tarfile = 'pdb/' + domain + '_graft' + pdb + '.tar.gz'
+    chainfile = 'out/' + domain + '_graft' + pdb + '_chainEntangle.txt'
+    basefile = 'out/' + domain + '_graft' + pdb + '_baseEntangle.txt'
     print tarfile
-    subprocess.call('tar -xzvf ' + tarfile, shell=True)
-    pdbfiles = glob.glob('./' + domain + '*.pdb')
+    subprocess.call('tar -xzvf ' + tarfile + ' -C ' +  domain + '_graft' + pdb , shell=True)
+    pdbfiles = glob.glob(domain + '_graft' + pdb + '/' + domain + '*.pdb')
     for pdbfile in pdbfiles:
         print pdbfile + ' ...'
-        chain_entangle(pdbfile, 'loop1_' + pdbfile, A3s[domain]['loop1'], pdbs[pdb], 'A', 'B', chainfile)
-        chain_entangle(pdbfile, 'loop3_' + pdbfile, A3s[domain]['loop3'], pdbs[pdb], 'A', 'B', chainfile)
-        base_entangle(pdbfile, 'loop1_' + pdbfile, A3s[domain]['loop1'], pdbs[pdb], 'A', 'B', basefile)
-        base_entangle(pdbfile, 'loop3_' + pdbfile, A3s[domain]['loop3'], pdbs[pdb], 'A', 'B', basefile)
-    subprocess.call('rm ' + domain + '*.pdb', shell=True)
-    # then the restrained ones
-    print tarfile_restrained
-    subprocess.call('tar -xzvf ' + tarfile_restrained, shell=True)
-    pdbfiles = glob.glob('./' + domain + '*.pdb')
-    for pdbfile in pdbfiles:
-        print 'Restrained: ' + pdbfile + ' ...'
-        chain_entangle(pdbfile, 'loop1_' + pdbfile, A3s[domain]['loop1'], pdbs[pdb], 'A', 'B', chainfile_restrained)
-        chain_entangle(pdbfile, 'loop3_' + pdbfile, A3s[domain]['loop3'], pdbs[pdb], 'A', 'B', chainfile_restrained)
-        base_entangle(pdbfile, 'loop1_' + pdbfile, A3s[domain]['loop1'], pdbs[pdb], 'A', 'B', basefile_restrained)
-        base_entangle(pdbfile, 'loop3_' + pdbfile, A3s[domain]['loop3'], pdbs[pdb], 'A', 'B', basefile_restrained)
-    subprocess.call('rm ' + domain + '*.pdb', shell=True)
+        name_struct = pdbfile.split('/')[1]
+        chain_entangle(pdbfile, 'loop1_' + name_struct, A3s[domain]['loop1'], pdbs[pdb], 'A', 'B', chainfile)
+        chain_entangle(pdbfile, 'loop3_' + name_struct, A3s[domain]['loop3'], pdbs[pdb], 'A', 'B', chainfile)
+        base_entangle(pdbfile, 'loop1_' + name_struct, A3s[domain]['loop1'], pdbs[pdb], 'A', 'B', basefile)
+        base_entangle(pdbfile, 'loop3_' + name_struct, A3s[domain]['loop3'], pdbs[pdb], 'A', 'B', basefile)
+    subprocess.call('rm -rf ' + domain + '_graft' + pdb + '/', shell=True)
