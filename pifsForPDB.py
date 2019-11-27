@@ -50,22 +50,23 @@ if __name__=="__main__":
 	print "Now run POPSCOMP."
 
 	for pdbcode, chains in structDict.items():
+		pdbdir = pdbcode[1:3]
 		if os.path.isfile(os.path.join(args.pifsDir, pdbcode + '_TopolFeat.pifs')) is False:
 			run_popscomp = pifsUtils.runPOPSCOMP(args.popsDir, args.popscompDir, \
-				pdbcode, args.inDir, args.popscompOutDir, \
+				pdbcode, args.inDir + pdbdir + '/', args.popscompOutDir + pdbdir + '/', \
 				args.errorFile, inputExt = inputExt)
 			if run_popscomp == 'Done' and \
-				os.path.isfile(args.popscompOutDir + '/popscomp.' + pdbcode + '.pdb.all.diff'):
+				os.path.isfile(args.popscompOutDir + pdbdir + '/popscomp.' + pdbcode + '.pdb.all.diff'):
 				# get interface residues
 				allNeighbours = list()
 				for chains in list(itertools.product(chains["protein"], chains["other"])):
 					protein_chain = chains[0]
 					chain1, chain2 = sorted(chains)
-					interface = pifsUtils.extractInteractRes(pdbcode, chain1, chain2, args.popscompOutDir)
+					interface = pifsUtils.extractInteractRes(pdbcode, chain1, chain2, args.popscompOutDir + pdbdir + '/')
 					if interface == []:
 					# sometimes the chain pair in POPSCOMP is not sorted, in this case
 					# try swapping and see if this helps!
-						interface = pifsUtils.extractInteractRes(pdbcode, chain2, chain1, args.popscompOutDir)
+						interface = pifsUtils.extractInteractRes(pdbcode, chain2, chain1, args.popscompOutDir + pdbdir + '/')
 					if interface != []:
 						print "Extract neighbour and calculate network ..."
 						if interface[0].chain_a == protein_chain:
@@ -73,7 +74,7 @@ if __name__=="__main__":
 						else:
 							resid = list([interaction.chain_b_res for interaction in interface][0])
 						# extract neigbours
-						neighbours = pifsUtils.extractNeighbours(args.inDir + '/' + pdbcode + '.' + inputExt, \
+						neighbours = pifsUtils.extractNeighbours(args.inDir + pdbdir + '/' + pdbcode + '.' + inputExt, \
 							protein_chain, resid, distCutoff = float(args.distCutoff))
 						if isinstance(neighbours, str) is True:
 							print neighbours # So the error will get printed out
@@ -83,22 +84,22 @@ if __name__=="__main__":
 						distanceDict = pifsUtils.calcDistance(neighbours, \
 							atomType = args.atomType)
 						# write output network flat-file
-						sifFile = os.path.join(args.networkOutDir, pdbcode + '-' + chain1 + 'vs' \
-							+ chain2 + '_network.txt')
+						sifFile = args.networkOutDir + pdbcode + '-' + chain1 + 'vs' \
+							+ chain2 + '_network.txt'
 						if pifsUtils.writeSif(distanceDict, sifFile) is "Done":
 							print pdbcode + ':' + chain1 + 'vs' + chain2 + ' residue network extracted.'
 				# calculate network based on entire structure
 				print "Now calculate a network on all interfaces in the structure ..."
 				allDistances = pifsUtils.calcDistance(list(set(allNeighbours)), \
 					atomType = args.atomType)
-				allSifFile = os.path.join(args.networkOutDir, pdbcode + '_network.txt')
+				allSifFile = args.networkOutDir + pdbcode + '_network.txt'
 				if pifsUtils.writeSif(allDistances, allSifFile, directNetwork = True, distCutoff = args.distCutoff) is "Done":
 					print pdbcode + ' residue network extracted.'
 					# extract features
-			                pifsUtils.extractOrganicFeatures(allSifFile, \
-			                        os.path.join(args.pifsDir, pdbcode + '_TopolFeat.pifs'))
+			                # pifsUtils.extractOrganicFeatures(allSifFile, \
+			                #         os.path.join(args.pifsDir, pdbcode + '_TopolFeat.pifs'))
 			
-#				os.system(''.join(['rm ', pdbcode, '.pdb']))
+				os.system(''.join(['rm ', pdbcode, '.pdb']))
 	# perform a census of features
 #	pifsUtils.census(args.pifsDir, args.pifsTag)
 	print 'Exit'

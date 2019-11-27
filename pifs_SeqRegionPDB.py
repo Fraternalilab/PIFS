@@ -30,7 +30,8 @@ if __name__=="__main__":
 				print row[0]
 				protein = row[2].split(',')
 				other = row[3].split(',')
-				structDict[row[1]] = {"file": row[0], "protein": protein, "range": other}
+				if len(protein) + len(other) <= 20:
+					structDict[row[1]] = {"file": row[0], "protein": protein, "range": other}
 
 	print "To analyse a total of  " + str(len(structDict.keys())) + " structures."
 
@@ -42,7 +43,7 @@ if __name__=="__main__":
 	print "Input structure files are of format: " + inputExt + ' .'
 
 	for pdbcode, chains in structDict.items():
-		# pdbdir = pdbcode[1:3]
+		pdbdir = pdbcode[1:3]
 		if os.path.isfile(os.path.join(args.pifsDir, pdbcode + '_TopolFeat.pifs')) is False:
 			allNeighbours = list()
 			protein_chain = chains['protein'][0]
@@ -60,20 +61,20 @@ if __name__=="__main__":
 				# write output network flat-file
 				if protein_chain == ' ':
 					protein_chain = ''
-				#sifFile = args.networkOutDir + pdbcode + '-' + protein_chain + '_network.txt'
-				#if pifsUtils.writeSif(distanceDict, sifFile) is "Done":
-				#	print pdbcode + ':' + protein_chain + ' residue network extracted.'
+				sifFile = args.networkOutDir + pdbcode + '-' + protein_chain + '_network.txt'
+				if pifsUtils.writeSif(distanceDict, sifFile) is "Done":
+					print pdbcode + ':' + protein_chain + ' residue network extracted.'
 			# calculate network based on entire structure
 			print "Now calculate a network on all interfaces in the structure ..."
 			allDistances = pifsUtils.calcDistance(list(set(allNeighbours)), \
 				atomType = args.atomType)
-			allSifFile = args.networkOutDir + args.pifsTag + "_" + pdbcode + '_network.txt'
-			if pifsUtils.writeSif(allDistances, allSifFile, directNetwork = True, distCutoff = float(args.distCutoff)) is "Done":
+			allSifFile = args.networkOutDir + pdbcode + '_network.txt'
+			if pifsUtils.writeSif(allDistances, allSifFile, directNetwork = True, distCutoff = args.distCutoff) is "Done":
 				print pdbcode + ' residue network extracted.'
 				# extract features
 			        # pifsUtils.extractOrganicFeatures(allSifFile, \
-			        #         os.path.join(args.pifsDir, pdbcode + '_TopolFeat.pifs'))
-			# os.system(''.join(['rm ', pdbcode, '.pdb']))
+			        #        os.path.join(args.pifsDir, pdbcode + '_TopolFeat.pifs'))
+			os.system(''.join(['rm ', pdbcode, '.pdb']))
 	# perform a census of features
 #	pifsUtils.census(args.pifsDir, args.pifsTag)
 	print 'Exit'

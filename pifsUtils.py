@@ -87,7 +87,7 @@ def runPOPSCOMP(popsDir, popscompDir, struct, indir, outdir, error_file, \
 		return "inputExt must be either pdb.gz or pdb. Exit."
 
 	with open(error_file, 'w') as error:
-		for structure in glob.glob(indir + '/' + struct + '.' + inputExt):
+                for structure in glob.glob(os.path.join(indir, struct + '.' + inputExt)):
 			#Only run POPSCOMP if output does not already exist.
 #			if not glob.glob(outdir + '/popscomp*'  + struct + '*'):
 			os.system('perl ' + popscompDir \
@@ -145,7 +145,8 @@ def extractNeighbours(structure, chain, resid, \
 			pdb1 = pdb[0] # just take the first model for simplicity
 			if pdb1.has_id(chain):
 				pdbchain = pdb1[chain]
-				all_ca = [atom for atom in Selection.unfold_entities(pdbchain,'A') if atom.name == atomType]
+                                pdb_A = pdb1['A']
+				all_ca = [atom for atom in Selection.unfold_entities(pdb_A,'A') if atom.name == atomType]
 				calphas = list()
 				neighbors = list()
 				for res in resid:
@@ -282,7 +283,7 @@ def writeSif(dictList, sif, nodeAKey = "res_1_id", nodeBKey = "res_2_id",
 								item[nodeBattrKey], item[nodeBKey], \
 								item[weightKey], weight])
 	return "Done"
-
+"""
 class OrganicFeatures:
 	'''
 	class to handle extraction of organic features of network
@@ -297,7 +298,7 @@ class OrganicFeatures:
 
 	def addGraph(self, networkFP):
 		with open(networkFP, 'r') as instream:
-			read = csv.reader(instream, delimiter="\t")
+			read = csv.reader(instream, delimiter='\t')
 			for row in read:
 				if row[0] != 'res_a':
 					if row[1] not in list(self.graph.nodes()):
@@ -583,3 +584,4 @@ def census(directory, tag):
 			fragment_wr.write(key + '\t' + str(value) + '\n')
 
 	return "CENSUS DONE for " + tag
+"""
