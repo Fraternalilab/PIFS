@@ -13,9 +13,10 @@ import subprocess
 if __name__=="__main__":
 	parser = argparse.ArgumentParser(description="PIFS: Protein Interface Fingerprinting with Subgraphs. This script deals with extracting residue networks from protein structure. It takes input for what sequence regions are of interest for each structure and uses biopython functionalities to manipulate structures and calculate Calpha-Calpha distances.")
 	parser.add_argument('--structList', help = 'a list of structures and residue ranges to analyse.', type = str, required = True)
+        parser.add_argument('--inDir', help = 'directory where input PDB files (or their gzipped versions) are.', type = str, required = True)
 	parser.add_argument('--networkOutDir', help = 'directory to network file output', type = str, required = True)
-	parser.add_argument('--pifsDir', help = 'directory to PIFS network feature summaries and census', type = str, required = True)
-	parser.add_argument('--pifsTag', help = 'name of this dataset, to be noted in the filenames of network feature summaries.', type = str, required = True)
+	# parser.add_argument('--pifsDir', help = 'directory to PIFS network feature summaries and census', type = str, required = True)
+	# parser.add_argument('--pifsTag', help = 'name of this dataset, to be noted in the filenames of network feature summaries.', type = str, required = True)
 	parser.add_argument('--errorFile', help = 'filename for log file of errors. Note: NO ABSOLUTE PATH since It will go in outDir.', type = str, default = "error.log")
 	parser.add_argument('--distCutoff', help = 'distance cut-off to extract residue neighbours.', default = 6.0, type = float)
 	parser.add_argument('--atomType', help = 'atom type based on which distances between residues are calculated.', default = "CA", type = str)
@@ -28,9 +29,9 @@ if __name__=="__main__":
 			read = csv.reader(instream, delimiter="\t")
 			for row in read:
 				print row[0]
-				protein = row[2].split(',')
-				other = row[3].split(',')
-				structDict[row[1]] = {"file": row[0], "protein": protein, "range": other}
+				protein = row[1].split(',')
+				region = row[2].split(',')
+				structDict[row[0]] = {"file": os.path.join(args.inDir, row[0]), "protein": protein, "range": region}
 
 	print "To analyse a total of  " + str(len(structDict.keys())) + " structures."
 
