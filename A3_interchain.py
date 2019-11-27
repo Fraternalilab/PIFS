@@ -25,30 +25,16 @@ print domain
 for pdb in pdbs.keys():
     print pdb
     tarfile = domain + '_graft' + pdb + '.tar.gz'
-    tarfile_restrained = domain + '_graft' + pdb + '_restrained.tar.gz'
     comparisonFile = domain + '_graft' + pdb + '.summary'
-    comparisonFile_restrained = domain + '_graft' + pdb + '_restrained.summary'
-    # first the non-restrained ones
     print tarfile
-    subprocess.call('tar -xzvf ' + tarfile, shell=True)
-    pdbfiles = glob.glob(domain + '_graft' + pdb + '_dna_*.pdb')
-    orig = domain + '_graft' + pdb + '.pdb'
-    find_contacts(orig, orig[:-4], pdbs[pdb], 'A', 'B', distCutoff=6.0)
+    subprocess.call('mkdir ' + domain + '_graft' + pdb, shell=True )
+    subprocess.call('tar -xzvf ' + tarfile + ' -C ' + domain + '_graft' + pdb , shell=True)
+    pdbfiles = glob.glob(domain + '_graft' + pdb + '/' + domain + '_graft' + pdb + '_dna_*.pdb')
+    orig = domain + '_graft' + pdb + '/' + domain + '_graft' + pdb + '.pdb'
+    name_struct = domain + '_graft' + pdb 
+    find_contacts(orig, name_struct, pdbs[pdb], 'A', 'B', distCutoff=6.0)
     for pdbfile in pdbfiles:
         print pdbfile + ' ...'
-        find_contacts(pdbfile, pdbfile[:-4], pdbs[pdb], 'A', 'B', distCutoff=6.0)
-        # compareHbonds(orig[:-4] + '.hbonds', pdbfile[:-4] + '.hbonds', comparisonFile)
-        # comparePiStack(orig[:-4] + '.pistack', pdbfile[:-4] + '.pistack', comparisonFile)
-    subprocess.call('rm ' + domain + '_graft' + pdb + '*.pdb', shell=True)
-    # then the restrained ones
-    print tarfile_restrained
-    subprocess.call('tar -xzvf ' + tarfile_restrained, shell=True)
-    pdbfiles = glob.glob(domain + '_graft' + pdb + '_dna_.pdb')
-    orig = domain + '_graft' + pdb + '.pdb'
-    find_contacts(orig, orig[:-4], pdbs[pdb], 'A', 'B', distCutoff=6.0)
-    for pdbfile in pdbfiles:
-        print pdbfile + ' ...'
-        find_contacts(pdbfile, pdbfile[:-4], pdbs[pdb], 'A', 'B', distCutoff=6.0)
-        # compareHbonds(orig[:-4] + '.hbonds', pdbfile[:-4] + '.hbonds', comparisonFile_restrained)
-        # comparePiStack(orig[:-4] + '.pistack', pdbfile[:-4] + '.pistack', comparisonFile_restrained)
-    subprocess.call('rm ' + domain + '_graft' + pdb + '*.pdb', shell=True)
+        name_struct = pdbfile.split('/')[1][:-4]
+        find_contacts(pdbfile, name_struct, pdbs[pdb], 'A', 'B', distCutoff=6.0)
+    subprocess.call('rm -rf ' + domain + '_graft' + pdb + '/', shell=True)
