@@ -48,7 +48,7 @@ def extractInteractRes(structName, chain1, chain2, \
 	:param interaction_cutoff: cutoff in Angstrom-squared, the change in SASA upon complex formation greater than which are considered as interacting interface, float. Default = 15.0
 	Modified from Anna Laddach
 	"""
-	pat = re.compile('\*\*\* Complex popscomp\.pair\.(.{4})\.pdb-' \
+	pat = re.compile('\*\*\* Complex popscomp\.pair\.(.+)\.pdb-' \
 		+ chain1 + '.NtoC:' + chain2 + '.NtoC(.*?)TOTAL DELTA', re.M|re.S)
 	interactions = []
 	infile = popscompOutDir + '/popscomp.' + structName + '.pdb.all.diff'

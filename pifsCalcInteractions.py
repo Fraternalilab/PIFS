@@ -276,7 +276,7 @@ def NeighbourBetweenChains(structure, name, chainToDefine, chainToSearch, residT
     else:
         return "File not found. Exit."
 
-def find_contacts(pdb, name, resrangeNA, chainProt, chainNA, distCutoff=6.0):
+def find_contacts(pdb, name, resrangeNA, chainProt, chainNA, distCutoff=6.0, outdir = '.'):
     '''
     the pipeline to find h-bonds and pi-stacking and write output files
     '''
@@ -321,7 +321,7 @@ def find_contacts(pdb, name, resrangeNA, chainProt, chainNA, distCutoff=6.0):
         for key, hbond in hbonds.iteritems():
             wr.writerow([name, hbond['donor'], hbond['acceptor'], str(hbond['dist'])])
     """
-    with open(name + '.pistack', 'w') as outstream:
+    with open(os.path.join(outdir, name + '.pistack'), 'w') as outstream:
         wr = csv.writer(outstream, delimiter="\t")
         wr.writerow(['pdb', 'res_1', 'res_2', 'angle', 'classification'])
         for key, pistack in pi_stacks.iteritems():

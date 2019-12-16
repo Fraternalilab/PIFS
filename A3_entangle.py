@@ -38,15 +38,15 @@ domain = sys.argv[1]
 definitions = A3s[domain]
 
 print domain
-os.chdir(domain + '/')
-for pdb in pdbs.keys():
+tarfile = domain + '_sample_pdbs.tar.gz'
+for pdb in pdbs.keys()[0]:
     print pdb
-    tarfile = 'pdb/' + domain + '_graft' + pdb + '.tar.gz'
-    chainfile = 'out/' + domain + '_graft' + pdb + '_chainEntangle.txt'
-    basefile = 'out/' + domain + '_graft' + pdb + '_baseEntangle.txt'
+    chainfile = 'output/' + domain + '_graft' + pdb + '_chainEntangle.txt'
+    basefile = 'output/' + domain + '_graft' + pdb + '_baseEntangle.txt'
     print tarfile
     subprocess.call('mkdir '+ domain + '_graft' + pdb, shell=True )
-    subprocess.call('tar -xzvf ' + tarfile + ' -C ' +  domain + '_graft' + pdb , shell=True)
+    subprocess.call('tar -xzvf ' + tarfile + ' -C ' +  domain + '_graft' + pdb + ' --wildcards *graft' + pdb + '*.pdb', \
+        shell=True)
     pdbfiles = glob.glob(domain + '_graft' + pdb + '/' + domain + '*.pdb')
     for pdbfile in pdbfiles:
         print pdbfile + ' ...'

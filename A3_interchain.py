@@ -22,19 +22,19 @@ with open(pdb_dna, 'r') as instream:
 
 domain = sys.argv[1]
 print domain
+tarfile = domain + '_sample_pdbs.tar.gz'
 for pdb in pdbs.keys():
     print pdb
-    tarfile = domain + '_graft' + pdb + '.tar.gz'
-    comparisonFile = domain + '_graft' + pdb + '.summary'
     print tarfile
     subprocess.call('mkdir ' + domain + '_graft' + pdb, shell=True )
-    subprocess.call('tar -xzvf ' + tarfile + ' -C ' + domain + '_graft' + pdb , shell=True)
+    subprocess.call('tar -xzvf ' + tarfile + ' -C ' + domain + '_graft' + pdb + ' --wildcards *graft' + pdb + '*.pdb', \
+        shell=True)
     pdbfiles = glob.glob(domain + '_graft' + pdb + '/' + domain + '_graft' + pdb + '_dna_*.pdb')
     orig = domain + '_graft' + pdb + '/' + domain + '_graft' + pdb + '.pdb'
     name_struct = domain + '_graft' + pdb 
-    find_contacts(orig, name_struct, pdbs[pdb], 'A', 'B', distCutoff=6.0)
+    find_contacts(orig, name_struct, pdbs[pdb], 'A', 'B', distCutoff=6.0, outdir = 'output')
     for pdbfile in pdbfiles:
         print pdbfile + ' ...'
         name_struct = pdbfile.split('/')[1][:-4]
-        find_contacts(pdbfile, name_struct, pdbs[pdb], 'A', 'B', distCutoff=6.0)
+        find_contacts(pdbfile, name_struct, pdbs[pdb], 'A', 'B', distCutoff=6.0, outdir = 'output')
     subprocess.call('rm -rf ' + domain + '_graft' + pdb + '/', shell=True)

@@ -11,15 +11,17 @@ PIFS is currently a collection of Python scripts developed to fingerprint protei
 
 In this repository the codes for the functions, sample scripts to process files, as well as sample input are provided:
 
-| Task | Functions | Sample scripts of heuristics | Sample input | Sample output |
+| Task | Functions | Sample scripts of heuristics | Sample input (directory `input/`) | Sample output (directory `output/`)|
 | ---- | --------- | ---------- | ------------ | ------------- |
-| Encode residue subgraphs for protein-X interface (where X can be protein/DNA/RNA) | `pifsUtils.py` | `pifs.py` | |
-| Encode residue subgraphs for a given region of the protein | `pifsUtils.py` | `pifs_SeqRegion.py` | |
-| Visualise residue subgraphs on PyMOL | `pifsDraw.py` | `pifsDrawNetworks.py` | |
-| Detect pi-pi stacking contacts between chains | `pifsCalcInteractions.py` | `A3_interchain.py` | |
-| Detect hydrogen bonds between chains (interfacing with UCSF Chimera) | `chimera_findhbond.py` | *NA* | |
-| Detect problematic interfaces (entanglement of chains) | `pifsEntanglement.py` | `A3_entangle.py` | |
-| Visualise problematic interfaces (entanglement of chains) | `pifsDrawEntanglement.py` | *NA (see below)* | |
+| Encode residue subgraphs for protein-X interface (where X can be protein/DNA/RNA) | `pifsUtils.py` | `pifs.py` | `pifs_testInput` | `pifs_out.tar.gz` |
+| Encode residue subgraphs for a given region of the protein | `pifsUtils.py` | `pifs_SeqRegion.py` | `pifsRegion_testInput` | `pifs_SeqRegion_out.tar.gz` |
+| Visualise residue subgraphs on PyMOL | `pifsDraw.py` | `pifsDrawNetworks.py` | *NA* | `pifs_DrawNetworks_out.tar.gz` |
+| Detect pi-pi stacking contacts between chains | `pifsCalcInteractions.py` | `A3_interchain.py` | `A3_DNA_Definition` | `pifs_pistack_A3A.tar.gz` |
+| Detect hydrogen bonds between chains (interfacing with UCSF Chimera) | `findHbond_chimera` in `chimera_findhbond.py` | `chimera_findhbond.py` | `pifs_hbonds_A3A.tar.gz` |
+| Detect problematic interfaces (entanglement of chains) | `pifsEntanglement.py` | `A3_entangle.py` | `A3_loopDefinition`| `pifs_A3A_graft5keg_entangle.tar.gz` |
+| Visualise problematic interfaces (entanglement of chains) | `pifsDrawEntanglement.py` | *NA (see below)* | *NA* | `pifs_pymol_entangle_example.png`|
+
+Test PDB files can be found in directory `pdb/`.
 
 ## Usage
 
@@ -27,14 +29,15 @@ In this repository the codes for the functions, sample scripts to process files,
 
 ```
 # example usage; please change --popsDir and --popscompDir as appropriate (see below description)
-python pifs.py --structList pifs_testInput --inDir pdb \
-  --networkOutDir out --popscompOutDir out \
+# please extract .pdb files from sample input archive. Here assumed the pdb files are in the directory 'pdb'.
+python pifs.py --structList input/pifs_testInput --inDir pdb \
+  --networkOutDir output --popscompOutDir output --gzipped False \
   --popsDir ~/pops --popscompDir ~/POPSCOMP --errorFile out/out.err
 ```
 
 This will generate, for each input structure, one residue network centred around the interface between two specified chains. [POPSCOMP](https://github.com/Fraternalilab/POPSCOMPlegacy) and [POPS](https://github.com/Fraternalilab/POPSlegacy) is called to identify such interface. Their locations could be specified by options `--popscompDir` and `--popsDir`. 
 
-This code requires as an input the PDB structures (the directory could be specified by `--inDir`), and a list indicating which chains are to be considered. An example is given in the file `pifs_testInput`, of the following format:
+This code requires as an input the PDB structures (the directory could be specified by `--inDir`), and a list indicating which chains are to be considered. An example is given in the file `input/pifs_testInput`, of the following format:
 
 ```
 # tab-delimited
@@ -52,11 +55,12 @@ A detailed description of options could be given by `python pifs.py --help`.
 
 ```
 # example usage; please change --popsDir and --popscompDir as appropriate (see below description)
-python pifs_SeqRegion.py --structList pifsRegion_testInput --inDir pdb \
-  --networkOutDir out --errorFile out/out.err
+# please extract .pdb files from sample input archive. Here assumed the pdb files are in the directory 'pdb'.
+python pifs_SeqRegion.py --structList input/pifsRegion_testInput --inDir pdb \
+  --networkOutDir output --gzipped False
 ```
 
-Same as (1), but here the region of interest is given in the text-based input file (see `pifsRegion_testInput` for an example), of the following format:
+Same as (1), but here the region of interest is given in the text-based input file (see `input/pifsRegion_testInput` for an example), of the following format:
 ```
 # tab-delimited
 # name_of_structures	chain	region
@@ -75,6 +79,7 @@ This could be achieved by a function `loadNetworkOnPyMOL` in `pifsDraw.py` which
 ### 4. Detect pi-pi stacking contacts between chains
 
 ```
+cp pdb/A3A_sample_pdbs.tar.gz ./ # copy input archive to working directory
 python A3_interchain.py A3A
 ```
 would perform the calculation for the domain A3A.
@@ -88,18 +93,21 @@ This is intended to be performed over large *ensembles* of protein-DNA complexes
 ### 6. Detect problematic interfaces (entanglement of chains) 
 
 ```
-python A3_interchain.py A3A
+cp pdb/A3A_sample_pdbs.tar.gz ./ # copy input archive to working directory
+python A3_entangle.py A3A
 ```
 would perform the calculation for the domain A3A.
 
 These codes were written to deal with specifically the "entanglement" of nucleic acid chain inside a protein loop, which was observed in certain protein-DNA structural poses obtained via *in silico* modelling. As input, a definition file for the range of DNA bases to consider (as above; see point no. 4) has to be specified, as well as another text-based file indicating the residue range for each loop on the protein chain to be examined. These codes used geometrical methdos to detect automatically such cases of nucleic acid entanglement. See Ch. 5 of the thesis (Ng, 2019) for further information.
+
+*Note: this heuristic runs notably slower than the other functionalities depicted here. Expect around 20 minutes to run this particular example.*
 
 ### 7. Visualise problematic interfaces (entanglement of chains)
 
 `pifsDrawEntanglement.py` was written as a plugin to PyMOL to visualise a case of entanglement as defined by the user. Ch. 5 of the thesis (Ng, 2019) - especially listing 5.5 and the discussion surrounding it offers a more explicit explanation. The code provides an additional PyMOL function `entangle` which could be invoked on the PyMOL command line - see below for an example:
 
 ```
-# !/ usr / bin / pymol
+#!/usr/bin/pymol
 run pifsDrawEntanglement.py
 # Open a PDB file for visualisation
 # Say the structural object is called ’test1’,
