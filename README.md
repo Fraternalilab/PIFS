@@ -7,6 +7,15 @@ Protein Interface Fingerprinting with Subgraphs
 
 PIFS is currently a collection of Python scripts developed to fingerprint protein interfaces of interest, using "subgraphs" (i.e. small residue networks, with C-alphas connected based on a user-defined distance threshold). It interfaces with atomic coordinate files (in Protein Data Bank [PDB] format; i.e. `*.pdb`) directly, offers functionalities to encode and visualise subgraphs, evaluation of interfaces, as well as detection of problematic cases such as entanglement of chains. 
 
+## Dependency
+
+- [POPSCOMP](https://github.com/Fraternalilab/POPSCOMPlegacy) and [POPS](https://github.com/Fraternalilab/POPSlegacy)
+- python 2.x (*To be updated for python 3*)
+- [Biopython](https://biopython.org/wiki/Download)
+- [networkx](https://networkx.github.io/documentation/stable/install.html)
+- [sympy](https://www.sympy.org/en/download.html)
+- (*optional*) [PyMOL](https://pymolwiki.org/index.php/Linux_Install) and [UCSF Chimera](https://www.cgl.ucsf.edu/chimera/download.html)
+
 ## Content
 
 In this repository the codes for the functions, sample scripts to process files, as well as sample input are provided:
