@@ -17,7 +17,7 @@ In this repository the codes for the functions, sample scripts to process files,
 | Encode residue subgraphs for a given region of the protein | `pifsUtils.py` | `pifs_SeqRegion.py` | `pifsRegion_testInput` | `pifs_SeqRegion_out.tar.gz` |
 | Visualise residue subgraphs on PyMOL | `pifsDraw.py` | `pifsDrawNetworks.py` | *NA* | `pifs_DrawNetworks_out.tar.gz` |
 | Detect pi-pi stacking contacts between chains | `pifsCalcInteractions.py` | `A3_interchain.py` | `A3_DNA_Definition` | `pifs_pistack_A3A.tar.gz` |
-| Detect hydrogen bonds between chains (interfacing with UCSF Chimera) | `findHbond_chimera` in `chimera_findhbond.py` | `chimera_findhbond.py` | `pifs_hbonds_A3A.tar.gz` |
+| Detect hydrogen bonds between chains (interfacing with UCSF Chimera) | `findHbond_chimera` in `chimera_findhbond.py` | `chimera_findhbond.py` | *NA* | `pifs_hbonds_A3A.tar.gz` |
 | Detect problematic interfaces (entanglement of chains) | `pifsEntanglement.py` | `A3_entangle.py` | `A3_loopDefinition`| `pifs_A3A_graft5keg_entangle.tar.gz` |
 | Visualise problematic interfaces (entanglement of chains) | `pifsDrawEntanglement.py` | *NA (see below)* | *NA* | `pifs_pymol_entangle_example.png`|
 
