@@ -37,6 +37,7 @@ Test PDB files can be found in directory `pdb/`.
 ### 1. Encode residue subgraphs for protein-X interface (where X can be protein/DNA/RNA)
 
 ```
+#!/usr/bin/bash
 # example usage; please change --popsDir and --popscompDir as appropriate (see below description)
 # please extract .pdb files from sample input archive. Here assumed the pdb files are in the directory 'pdb'.
 python pifs.py --structList input/pifs_testInput --inDir pdb \
@@ -63,6 +64,7 @@ A detailed description of options could be given by `python pifs.py --help`.
 ### 2. Encode residue subgraphs for a given region of the protein 
 
 ```
+#!/usr/bin/bash
 # example usage; please change --popsDir and --popscompDir as appropriate (see below description)
 # please extract .pdb files from sample input archive. Here assumed the pdb files are in the directory 'pdb'.
 python pifs_SeqRegion.py --structList input/pifsRegion_testInput --inDir pdb \
@@ -88,6 +90,7 @@ This could be achieved by a function `loadNetworkOnPyMOL` in `pifsDraw.py` which
 ### 4. Detect pi-pi stacking contacts between chains
 
 ```
+#!/usr/bin/bash
 cp pdb/A3A_sample_pdbs.tar.gz ./ # copy input archive to working directory
 python A3_interchain.py A3A
 ```
@@ -102,6 +105,7 @@ This is intended to be performed over large *ensembles* of protein-DNA complexes
 ### 6. Detect problematic interfaces (entanglement of chains) 
 
 ```
+#!/usr/bin/bash
 cp pdb/A3A_sample_pdbs.tar.gz ./ # copy input archive to working directory
 python A3_entangle.py A3A
 ```
